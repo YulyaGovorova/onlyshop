@@ -4,6 +4,6 @@ from django.urls import path
 
 urlpatterns = [
     path('', index),
-    path('', format)
+    path('contacts/', format)
 ]
 
