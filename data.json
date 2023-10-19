@@ -1,0 +1,1 @@
+[{"model": "catalog.category", "pk": 1, "fields": {"category_name": "Категория", "category_description": "", "create_at": "2023-10-20"}}, {"model": "catalog.category", "pk": 2, "fields": {"category_name": "наименование", "category_description": "", "create_at": "2023-10-20"}}]
