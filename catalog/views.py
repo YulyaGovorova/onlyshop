@@ -20,7 +20,4 @@ def format(request):
 #         phone = request.POST.get('phone')
 #         message = request.POST.get('message')
 #         print(f'You have new message from {name}({phone}): {message}')
-#     context = {
-#         'title': 'Контакты'
-#     }
-#     return render(request, 'catalog/product.html', context)
+#     return render(request, 'catalog/product.html')
