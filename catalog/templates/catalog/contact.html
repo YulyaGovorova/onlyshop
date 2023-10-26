@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    <div class="col-mb-4">
+        <div class="card-body">
+            <div class="card shadow-sm">
+                <p class="card-text">
+                    Офис Мск<br>
+                    Офис Спб<br>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-mb-4">
+    <div class="card-body">
+        <div class="card shadow-sm">
+            <h2>Напишите нам</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input class="form-control" name="name"/>
+                <input class="form-control" name="email"/>
+                <textarea class="form-control" name="message"></textarea>
+                <button type="submit" class="btn btn-primary form-control">Отправить</button>
+            </form>
+            </p>
+        </div>
+    </div>
+{% endblock %}
