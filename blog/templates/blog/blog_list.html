@@ -1,0 +1,39 @@
+{% extends 'catalog/base.html' %}
+{% load my_filter %}
+{% block content %}
+<div class="col-12">
+    <a href="{% url 'blog:blog_create' %}" class="btn btn-sm btn-outline-secondary m-1">Create new blog></a>
+    <div class="row text-center mx-5">
+        {% for object in object_list %}
+        <div class="col-4">
+            <div class="card shadow-sm">
+                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
+                     xmlns="http://www.w3.org/2000/svg"
+                     role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice"
+                     focusable="false">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#55595c"/>
+                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                </svg>
+
+                <div class="card-body">
+                    <p class="card-text">{{ object }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <a href="{% url 'blog:blogs_item' object.pk %}"
+                               class="btn btn-sm btn-outline-secondary m-1">View</a>
+                            <a href="{% url 'blog:blog_update' object.pk %}"
+                               class="btn btn-sm btn-outline-secondary m-1">Edit</a>
+                            <a href="{% url 'blog:blog_delete' object.pk %}"
+                               class="btn btn-sm btn-outline-secondary m-1">Delete</a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% endblock

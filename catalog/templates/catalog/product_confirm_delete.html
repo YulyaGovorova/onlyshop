@@ -1,0 +1,16 @@
+% extends 'catalog/base.html' %}
+{% load my_filter %}
+{% block content %}
+    <div class="row">
+        <div class="card mb-5">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    Нажмите "Да" для подтверждения удаления продукта "{{ object }}" <br><br>
+                    <input type="submit" class="btn btn-success" value="Да">
+                     <a href="{% url 'catalog:index' %}" class="btn btn-primary">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+ {% endblock %}
