@@ -15,13 +15,13 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = ('name', 'phone')
+    fields = ('name', 'cost')
     success_url = reverse_lazy('catalog:index')
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data()
-        context_data['title'] = context_data['object']
-        return context_data
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data()
+    #     context_data['title'] = context_data['object']
+    #     return context_data
 
 
 class ProductDeleteView(DeleteView):
