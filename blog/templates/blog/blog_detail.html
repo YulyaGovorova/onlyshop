@@ -1,21 +1,29 @@
 {% extends 'catalog/base.html' %}
 {% load my_filter %}
 {% block content %}
-
-<div class="row">
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-                <p>{{ object.title }} {{ object.slug }}</p><br>
+<div class="col-12">
+    <div class="row">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <p>{{ object.title }} {{ object.slug }}</p><br>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <p>{{ object.body }}</p><br>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<br>
-<br>
-<div class="card-footer">
-    Просмотры: {{ object.views_count }}
-    <a href="{% url 'blog:blogs' %}" class="btn btn-sm btn-outline-secondary">Back</a>
+    <br>
+    <br>
+    <div class="card-footer">
+        Просмотры: {{ object.views_count }}
+        <a href="{% url 'blog:blogs' %}" class="btn btn-sm btn-outline-secondary">Back</a>
+    </div>
 </div>
 {{ object.inc }}
 {% endblock %}
