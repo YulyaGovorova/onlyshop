@@ -6,11 +6,7 @@ from blog.models import Blog
 
 
 class BlogListView(ListView):
-    paginate_by = 4
     model = Blog
-    extra_context = {
-        'title': 'Блоги'
-    }
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
@@ -28,7 +24,7 @@ class BlogDetailView(DetailView):
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        self.views_count += 1
+        self.object.views_count += 1
         self.object.save()
         return self.object
 
