@@ -26,7 +26,8 @@ class ProductForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['version_user'].widget = forms.HiddenInput()
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
 
     def clean_product_name(self):
         clean_data = self.cleaned_data['product_name']
