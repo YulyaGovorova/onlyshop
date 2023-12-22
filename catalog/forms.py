@@ -3,11 +3,11 @@ from django import forms
 from catalog.models import Product, Version
 
 
-# class StyleFormMixin:
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for field_name, field in self.fields.items():
-#             field.widget.attrs['class'] = 'form-control'
+class StyleFormMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
 
 
 class ProductForm(forms.ModelForm):
@@ -24,9 +24,9 @@ class ProductForm(forms.ModelForm):
         # exclude = ('product_data_created',)
         exclude = ('product_data_created', 'product_last_data_change',)
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['version_user'].widget = forms.HiddenInput()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['version_user'].widget = forms.HiddenInput()
 
     def clean_product_name(self):
         clean_data = self.cleaned_data['product_name']
