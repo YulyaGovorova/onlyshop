@@ -1,7 +1,9 @@
+from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
-from catalog.models import Product
+from catalog.forms import ProductForm, ProductVersionForm
+from catalog.models import Product, Version
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
 
@@ -15,13 +17,27 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = ('name', 'cost')
+    form_class = ProductForm
+    # fields = ('name', 'cost')
     success_url = reverse_lazy('catalog:index')
 
-    # def get_context_data(self, **kwargs):
-    #     context_data = super().get_context_data()
-    #     context_data['title'] = context_data['object']
-    #     return context_data
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        version_formset = inlineformset_factory(Product, Version, form=ProductVersionForm, fields='__all__', extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = version_formset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = version_formset(instance=self.object)
+        return context_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+
+        return super().form_valid(form)
 
 
 class ProductDeleteView(DeleteView):
@@ -31,6 +47,7 @@ class ProductDeleteView(DeleteView):
 
 class ProductUpdateView(UpdateView):
     model = Product
+    form_class = ProductForm
     success_url = reverse_lazy('catalog:index')
 
 
