@@ -1,7 +1,0 @@
-{% autoescape off %}
-Уважаемый {{ user.username }}!
-Вы отправили запрос на сброс пароля. Чтобы выполнить сброс, пройдите
-по этому интернет-адресу :
-
-{{ protocol }}://{{ domain }}{% url 'users:reset' uidb64=uid token=token %}
-{% endautoescape %}
