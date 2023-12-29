@@ -148,7 +148,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_HOST = 'admin@sky.pro'
-EMAIL_PORT = 465
 EMAIL_HOST_USER = "tishyulya.1@yandex.ru"
 EMAIL_HOST_PASSWORD = "silence11"
 EMAIL_USE_TLS = False
