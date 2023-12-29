@@ -1,34 +1,22 @@
 {% extends 'catalog/base.html' %}
 
 {% block content %}
-<div class="col-12">
-    <form class="row" method="post" enctype="multipart/form-data">
-        <div class="col-3"></div>
-        <div class="card mb-5">
-            <div class="card-header">
-                <h3 class="card-title">
-                    Вход
-                </h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="submit" class="btn btn-success"
-                           value="Войти">
-                    <a href="{% url 'catalog:index' %}" class="btn btn-primary">Back</a>
-                    <a href="{% url 'users:recovery' %}" class="link-dark">Забыли пароль?</a>
+<div class="row">
+    <div class="col-3">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header"></div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" cls="btn btn-success">Вход</button>
+                    </form>
                 </div>
+                <div class="card-footer"></div>
             </div>
-    </form>
-    <div class="row">
-        <form class="col-12" action="{% url 'users:recovery' %}" method="post">
-            {% csrf_token %}#}
-            <a href="{% url 'users:recovery' %}" class="link-dark">Забыли пароль?</a>
-            <div class="col-6">
-                <button type="submit">Забыли пароль?</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
+
 {% endblock %}

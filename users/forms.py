@@ -1,7 +1,10 @@
 from django import forms
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm as Auth, PasswordResetForm
+
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordResetForm, AuthenticationForm as Auth
 from django.core.exceptions import ValidationError
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView
 
 from catalog.forms import StyleFormMixin
 from users.models import User
@@ -20,7 +23,6 @@ class AuthenticationForm(Auth):
                 password=password,
             )
 
-
             if self.user_cache is None:
                 raise self.get_invalid_login_error()
             else:
@@ -36,10 +38,13 @@ class AuthenticationForm(Auth):
         return self.cleaned_data
 
 
-class UserRegisterForm(UserCreationForm):
+
+class UserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
+
+
 
 
 class UserProfileForm(UserChangeForm):
