@@ -4,5 +4,12 @@
         <li><a href="{% url 'catalog:index' %}" class="text-white">Главная</a></li>
         <li><a href="{% url 'catalog:contact' %}" class="text-white">Контакты</a></li>
         <li><a href="{% url 'blog:blogs' %}" class="text-white">Блоги</a></li>
+         {% if user.is_authenticated %}
+            <li><a href="{% url 'users:logout' %}" class="text-white">Выйти</a></li>
+            <li><a href="{% url 'users:profile' %}" class="text-white">Профиль</a></li>
+        {% else %}
+            <li><a href="{% url 'users:login' %}" class="text-white">Войти</a></li>
+            <li><a href="{% url 'users:register' %}" class="text-white">Регистрация</a></li>
+        {% endif %}
     </ul>
 </div>
