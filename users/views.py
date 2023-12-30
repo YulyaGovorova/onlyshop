@@ -1,40 +1,36 @@
-from django.contrib.auth import login
-from django.contrib.auth.views import LoginView as BaseLoginView, PasswordResetConfirmView, PasswordResetView
-from django.contrib.auth.views import LoginView as BaseLogoutView
-from django.core.mail import send_mail
-from django.shortcuts import redirect
+from urllib import request
+
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView, LoginView
+
+from django.shortcuts import redirect, render
+
 from django.urls import reverse_lazy
+from django.utils.http import urlsafe_base64_decode
 from django.views import View
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.tokens import default_token_generator as token_generator
+
 from config import settings
 from config.settings import EMAIL_HOST_USER
-from users.forms import UserForm, UserProfileForm, UserRecoveryForm
+from users.forms import UserProfileForm, UserRecoveryForm, UserRegisterForm
 from users.models import User
 from django.core.exceptions import ValidationError
 
-class LoginView(BaseLoginView):
-    template_name = 'users/login.html'
+from users.utils import send_email_for_verify
 
 
-class LogoutView(BaseLogoutView):
-    pass
+class ExtraLoginView(LoginView):
+    form_class = AuthenticationForm
+
 
 class RegisterView(CreateView):
     model = User
-    form_class = UserForm
-    success_url = reverse_lazy('user:login')
+    form_class = UserRegisterForm
     template_name = 'users/register.html'
+    success_url = reverse_lazy('users:login')
 
-    def form_valid(self, form):
-        new_user = form.save()
-        send_mail(
-            subject='Поздравляем с регистрацией',
-            message='',
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[new_user.email]
-        )
-        return super().form_valid(form)
 
 class ProfileView(UpdateView):
     model = User
@@ -43,6 +39,7 @@ class ProfileView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
 
 class EmailVerify(View):
 
@@ -67,13 +64,13 @@ class EmailVerify(View):
             user = None
         return user
 
+
 class PasswordRecoveryView(PasswordResetView):
     template_name = 'users/restore_pass.html'
     email_template_name = 'users/reset_email.html',
     success_url = reverse_lazy('users:login')
     from_email = EMAIL_HOST_USER
     form_class = UserRecoveryForm
-
 
 
 class PasswordResetView(PasswordResetConfirmView):

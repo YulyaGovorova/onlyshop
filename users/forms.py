@@ -3,8 +3,7 @@ from django.contrib.auth import authenticate
 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordResetForm, AuthenticationForm as Auth
 from django.core.exceptions import ValidationError
-from django.urls import reverse_lazy
-from django.views.generic import UpdateView
+
 
 from catalog.forms import StyleFormMixin
 from users.models import User
@@ -39,7 +38,7 @@ class AuthenticationForm(Auth):
 
 
 
-class UserForm(UserCreationForm):
+class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
