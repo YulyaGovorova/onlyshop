@@ -8,12 +8,19 @@ from catalog.forms import ProductForm,  VersionForm
 from catalog.models import Product, Version
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
-from config import settings
-from users.models import User
+from catalog.service import get_cached_categories
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class ProductListView(ListView):
     model = Product
+    template_name = 'catalog/index.html'
+    context_object_name = 'objects_list'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        version_list = Version.objects.all()
+        context_data['formset'] = version_list
+        return context_data
 
 
     def get_queryset(self):
@@ -35,22 +42,28 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:index')
+    permission_required = 'catalog.add_product'
 
     def get_initial(self):
-        initials = super().get_initial()
-        initials['version_user'] = User.objects.get(email=self.request.user)
-        return initials
+        return {'user': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['category_list'] = get_cached_categories()
+        return context_data
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:index')
+    permission_required = 'catalog.delete_product'
 
 
 class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:index')
+    permission_required = 'catalog.change_product'
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -70,28 +83,24 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 
         return super().form_valid(form)
 
+class ProductContactListView(ListView):
+    model = Product
+    template_name = 'catalog/contacts.html'
+# def contact(request):
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         phone = request.POST.get('phone')
+#         message = request.POST.get('message')
+#         send_mail(f'You have new message from {name}({phone})', message,
+#                   settings.EMAIL_HOST_USER, ['tishyulya.1@yandex.ru'])
+#         print(f'You have new message from {name}({phone}): {message}')
+#     context = {
+#         'title': 'Контакты'
+#     }
+#     return render(request, 'catalog/contacts.html', context)
 
-def contact(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        message = request.POST.get('message')
-        send_mail(f'You have new message from {name}({phone})', message,
-                  settings.EMAIL_HOST_USER, ['tishyulya.1@yandex.ru'])
-        print(f'You have new message from {name}({phone}): {message}')
-    context = {
-        'title': 'Контакты'
-    }
-    return render(request, 'catalog/contacts.html', context)
-
-class VersionCreateView(LoginRequiredMixin, CreateView):
+class VersionCreateView(PermissionRequiredMixin, CreateView):
     model = Version
     form_class = VersionForm
-    success_url = reverse_lazy('catalog:list')
-
-    def form_valid(self, form):
-        product_pk = self.kwargs['pk']
-        product = Product.objects.get(pk=product_pk)
-        form.instance.product = product
-        Version.objects.filter(product=product).exclude(pk=product_pk).update(is_current=False)
-        return super().form_valid(form)
+    success_url = reverse_lazy('catalog:index')
+    permission_required = 'catalog.add_version'
