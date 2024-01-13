@@ -151,7 +151,7 @@ LOGIN_URL = '/users/login'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'tishyulya.1@yandex.ru'
-EMAIL_HOST_PASSWORD = 'silence110595'
+EMAIL_HOST_PASSWORD = 'silence11'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 

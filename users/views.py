@@ -1,7 +1,7 @@
-from urllib import request
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView, LoginView
 
 from django.shortcuts import redirect, render
@@ -12,7 +12,6 @@ from django.views import View
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.tokens import default_token_generator as token_generator
 
-from config import settings
 from config.settings import EMAIL_HOST_USER
 from users.forms import UserProfileForm, UserRecoveryForm, UserRegisterForm
 from users.models import User
@@ -29,10 +28,25 @@ class RegisterView(CreateView):
     model = User
     form_class = UserRegisterForm
     template_name = 'users/register.html'
-    success_url = reverse_lazy('users:login')
+    success_url = reverse_lazy('users:confirm_email')
+
+    def post(self, request, **kwargs):
+        form = UserRegisterForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(email=email, password=password)
+            send_email_for_verify(request, user)
+            return redirect('users:confirm_email')
+        context = {
+            'form': form
+        }
+        return render(request, self.template_name, context)
 
 
-class ProfileView(UpdateView):
+class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     success_url = reverse_lazy('users:profile')
@@ -56,7 +70,7 @@ class EmailVerify(View):
     @staticmethod
     def get_user(uidb64):
         try:
-
+            # urlsafe_base64_decode() decodes to bytestring
             uid = urlsafe_base64_decode(uidb64).decode()
             user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError,
@@ -71,6 +85,7 @@ class PasswordRecoveryView(PasswordResetView):
     success_url = reverse_lazy('users:login')
     from_email = EMAIL_HOST_USER
     form_class = UserRecoveryForm
+
 
 
 class PasswordResetView(PasswordResetConfirmView):

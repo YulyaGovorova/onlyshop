@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DeleteView, UpdateView, CreateView, DetailView
 from pytils.translit import slugify
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.models import Blog
 
 
@@ -23,10 +23,10 @@ class BlogDetailView(DetailView):
         return context_data
 
     def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        self.object.views_count += 1
-        self.object.save()
-        return self.object
+        post = super().get_object(queryset)
+        post.inc_views_count()
+        post.save()
+        return post
 
 
 class BlogCreateView(CreateView):

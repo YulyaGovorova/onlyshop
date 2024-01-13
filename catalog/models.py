@@ -1,7 +1,23 @@
 import datetime
 from django.db import models
 
+from users.models import User
+
 NULLABLE = {'null': True, 'blank': True}
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, verbose_name='наименование')
+    description = models.TextField(verbose_name='описание'),
+    create_at = models.DateField(verbose_name='на удаление', default=datetime.date.today)
+
+    def __str__(self):
+        return f"{self.name}"
+
+    class Meta:
+        verbose_name = 'категория'
+        verbose_name_plural = 'категории'
+        ordering = ('name',)
 
 
 class Product(models.Model):
@@ -11,28 +27,29 @@ class Product(models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='категория')
     cost = models.FloatField(verbose_name='цена')
     create_data = models.DateField(verbose_name='на удаление', default=datetime.date.today)
-
+    data_change = models.DateField(verbose_name='последнее изменение', default=datetime.date.today)
+    product_is_publicated = models.BooleanField(verbose_name='опубликован', default=False)
     def __str__(self):
-        return f"{self.name}\nЦена: {self.cost}"
+        return f"{self.name} * {self.cost}"
 
     class Meta:
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
         ordering = ('name',)
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=100, verbose_name='наименование')
-    description = models.TextField(verbose_name='описание')
-    create_at = models.DateField(verbose_name='на удаление', default=datetime.date.today)
-
-    def __str__(self):
-        return f"{self.name} {self.description}"
-
-    class Meta:
-        verbose_name = 'категория'
-        verbose_name_plural = 'категории'
-        ordering = ('name',)
+        permissions = [
+            (
+                'product_is_publicated',
+                'Can publish product'
+            ),
+            (
+                'description',
+                'Can edit description'
+            ),
+            (
+                'category',
+                'Can change category'
+            )
+        ]
 
 
 class Version(models.Model):

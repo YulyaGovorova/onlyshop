@@ -19,10 +19,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        # fields = '__all__'
-        # fields = ('product_name', 'product_description', 'product_cost',)
-        # exclude = ('product_data_created',)
-        exclude = ('product_data_created', 'product_last_data_change',)
+        exclude = ('create_data', 'data_change',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,7 +27,7 @@ class ProductForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
 
     def clean_product_name(self):
-        clean_data = self.cleaned_data['product_name']
+        clean_data = self.cleaned_data['name']
         # Если пересечение множества запрещённых слов и множества слов введённых в поле 'product_name' не пустое
         if self.has_forbidden_words(clean_data):
             raise forms.ValidationError(f'Поле "Наименование" не должно содержать '
@@ -39,7 +36,7 @@ class ProductForm(forms.ModelForm):
         return clean_data
 
     def clean_product_description(self):
-        clean_data = self.cleaned_data['product_description']
+        clean_data = self.cleaned_data['description']
         # Если пересечение множества запрещённых слов и множества слов введённых в поле 'product_name' не пустое
         if self.has_forbidden_words(clean_data):
             raise forms.ValidationError(f'Поле "Описание" не должно содержать '
@@ -48,7 +45,7 @@ class ProductForm(forms.ModelForm):
         return clean_data
 
 
-class ProductVersionForm(forms.ModelForm):
+class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Version
         fields = '__all__'
