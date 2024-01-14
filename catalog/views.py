@@ -9,11 +9,12 @@ from catalog.models import Product, Version
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
 from catalog.service import get_cached_categories
+from config import settings
 
 
 class ProductListView(ListView):
     model = Product
-    template_name = 'catalog/index.html'
+    template_name = 'catalog/product_list.html'
     context_object_name = 'objects_list'
 
     def get_context_data(self, **kwargs):
@@ -67,7 +68,7 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        version_formset = inlineformset_factory(Product, Version, form=ProductVersionForm, fields='__all__', extra=1)
+        version_formset = inlineformset_factory(Product, Version, form=VersionForm, fields='__all__', extra=1)
         if self.request.method == 'POST':
             context_data['formset'] = version_formset(self.request.POST, instance=self.object)
         else:
@@ -85,19 +86,21 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 
 class ProductContactListView(ListView):
     model = Product
-    template_name = 'catalog/contacts.html'
-# def contact(request):
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         phone = request.POST.get('phone')
-#         message = request.POST.get('message')
-#         send_mail(f'You have new message from {name}({phone})', message,
-#                   settings.EMAIL_HOST_USER, ['tishyulya.1@yandex.ru'])
-#         print(f'You have new message from {name}({phone}): {message}')
-#     context = {
-#         'title': 'Контакты'
-#     }
-#     return render(request, 'catalog/contacts.html', context)
+    template_name = 'catalog/contact.html'
+
+
+def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message')
+        send_mail(f'You have new message from {name}({phone})', message,
+        settings.EMAIL_HOST_USER, ['tishyulya.1@yandex.ru'])
+        print(f'You have new message from {name}({phone}): {message}')
+    context = {
+        'title': 'Контакты'
+    }
+    return render(request, 'catalog/contact.html', context)
 
 class VersionCreateView(PermissionRequiredMixin, CreateView):
     model = Version
