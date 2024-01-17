@@ -1,10 +1,9 @@
 import datetime
 from django.db import models
 
-from users.models import User
+
 
 NULLABLE = {'null': True, 'blank': True}
-
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name='наименование')

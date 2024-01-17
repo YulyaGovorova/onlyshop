@@ -10,7 +10,7 @@ class StyleFormMixin:
             field.widget.attrs['class'] = 'form-control'
 
 
-class ProductForm(forms.ModelForm):
+class ProductForm(StyleFormMixin, forms.ModelForm):
     forbidden_words = {'казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар'}
 
     @staticmethod
@@ -19,16 +19,15 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        exclude = ('create_data', 'data_change',)
+        exclude = ('data_created', 'data_change',)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['version_user'].widget = forms.HiddenInput()
 
     def clean_product_name(self):
         clean_data = self.cleaned_data['name']
-        # Если пересечение множества запрещённых слов и множества слов введённых в поле 'product_name' не пустое
+
         if self.has_forbidden_words(clean_data):
             raise forms.ValidationError(f'Поле "Наименование" не должно содержать '
                                         f'слов - {", ".join(ProductForm.forbidden_words)}.')
@@ -37,7 +36,7 @@ class ProductForm(forms.ModelForm):
 
     def clean_product_description(self):
         clean_data = self.cleaned_data['description']
-        # Если пересечение множества запрещённых слов и множества слов введённых в поле 'product_name' не пустое
+
         if self.has_forbidden_words(clean_data):
             raise forms.ValidationError(f'Поле "Описание" не должно содержать '
                                         f'слов - {", ".join(ProductForm.forbidden_words)}.')
@@ -45,7 +44,7 @@ class ProductForm(forms.ModelForm):
         return clean_data
 
 
-class VersionForm(StyleFormMixin, forms.ModelForm):
+class ProductVersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Version
         fields = '__all__'
