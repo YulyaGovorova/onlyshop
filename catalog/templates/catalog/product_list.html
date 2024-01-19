@@ -19,12 +19,18 @@
                 <p class="card-text">{{ object }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
+                        {% if perms.catalog.add_product %}
                             <a href="{% url 'catalog:product' object.pk %}"
                                class="btn btn-sm btn-outline-secondary m-1">View</a>
+                        {% endif %}
+                        {% if perms.catalog.change_product %}
                             <a href="{% url 'catalog:update_product' object.pk %}"
                                class="btn btn-sm btn-outline-secondary m-1">Edit</a>
+                        {% endif %}
+                        {% if perms.catalog.delete_product %}
                             <a href="{% url 'catalog:product_delete' object.pk %}"
                                class="btn btn-sm btn-outline-secondary m-1">Delete</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
