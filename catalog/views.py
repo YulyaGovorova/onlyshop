@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.shortcuts import render
@@ -12,7 +12,7 @@ from config import settings
 from users.models import User
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class ProductListView(ListView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:index')
@@ -29,7 +29,7 @@ class ProductListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class ProductDetailView(LoginRequiredMixin, DetailView):
+class ProductDetailView(DetailView):
     model = Product
 
     def get_context_data(self, **kwargs):
@@ -47,6 +47,13 @@ class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
     def get_initial(self):
         return {'user': self.request.user}
 
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+
+        return super().form_valid(form)
+
     # def get_initial(self):
     #     initials = super().get_initial()
     #     initials['version_user'] = User.objects.get(email=self.request.user)
@@ -59,12 +66,14 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
     permission_required = 'catalog.delete_product'
 
 
-class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class ProductUpdateView(UserPassesTestMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:index')
     permission_required = 'catalog.change_product'
 
+    def test_func(self):
+        return  self.request.user.is_staff and self.get_object().owner == self.request.user
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(**kwargs)
         version_formset = inlineformset_factory(Product, Version, form=ProductVersionForm, fields='__all__', extra=1)

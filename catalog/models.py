@@ -1,7 +1,7 @@
 import datetime
 from django.db import models
 
-
+from users.models import User
 
 NULLABLE = {'null': True, 'blank': True}
 
@@ -28,6 +28,9 @@ class Product(models.Model):
     create_data = models.DateField(verbose_name='на удаление', default=datetime.date.today)
     data_change = models.DateField(verbose_name='последнее изменение', default=datetime.date.today)
     product_is_publicated = models.BooleanField(verbose_name='опубликован', default=False)
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='владелец', **NULLABLE)
+
     def __str__(self):
         return f"{self.name} * {self.cost}"
 

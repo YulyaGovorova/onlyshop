@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.models import Blog
 
 
-class BlogListView(LoginRequiredMixin, ListView):
+class BlogListView(ListView):
     model = Blog
 
     def get_queryset(self, *args, **kwargs):
@@ -14,7 +14,7 @@ class BlogListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class BlogDetailView(LoginRequiredMixin, DetailView):
+class BlogDetailView(DetailView):
     model = Blog
 
     def get_context_data(self, **kwargs):
@@ -29,7 +29,7 @@ class BlogDetailView(LoginRequiredMixin, DetailView):
         return post
 
 
-class BlogCreateView(LoginRequiredMixin, CreateView):
+class BlogCreateView(CreateView):
     model = Blog
     fields = ('title', 'body',)
     success_url = reverse_lazy('blog:blogs')
@@ -42,7 +42,7 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class BlogUpdateView(LoginRequiredMixin, UpdateView):
+class BlogUpdateView(UpdateView):
     model = Blog
     fields = ('title', 'body', 'preview', 'publication')
 
@@ -57,6 +57,6 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('blogs:view', args=[self.kwargs.get('pk')])
 
 
-class BlogDeleteView(LoginRequiredMixin, DeleteView):
+class BlogDeleteView(DeleteView):
     model = Blog
     success_url = reverse_lazy('blog:blogs')
