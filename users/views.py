@@ -1,12 +1,13 @@
-
+from django.contrib.auth.views import LoginView
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView, LoginView
-
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView
+from django.core.mail import send_mail
+import random
 from django.shortcuts import redirect, render
 
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
 from django.views.generic import CreateView, UpdateView
@@ -19,9 +20,11 @@ from django.core.exceptions import ValidationError
 
 from users.utils import send_email_for_verify
 
-
 class ExtraLoginView(LoginView):
     form_class = AuthenticationForm
+# class LoginView(BaseLoginView):
+#     template_name = 'users/login.html'
+#     form_class = AuthenticationForm
 
 
 class RegisterView(CreateView):
@@ -92,3 +95,28 @@ class PasswordResetView(PasswordResetConfirmView):
     post_reset_login = True
     template_name = "users/password_reset_confirm.html"
     success_url = reverse_lazy('users:login')
+
+
+# def forgot_password(request):
+#     if request.method == 'POST':
+#         email = request.POST.get('user_email')
+#         try:
+#             user = User.objects.get(email=email)
+#             new_password = ''.join([str(random.randint(0, 9)) for _ in range(8)])
+#             send_mail(
+#                 subject='New password',
+#                 message=f'Your new password {new_password}',
+#                 from_email=EMAIL_HOST_USER,
+#                 recipient_list=[user.email]
+#             )
+#             user.set_password(new_password)
+#             user.save()
+#             return redirect(reverse('users:login'))
+#         except Exception:
+#             message = 'We can not find user with this email'
+#             contex = {
+#                 'message': message
+#             }
+#             return render(request, 'users/forgot_password.html', contex)
+#     else:
+#         return render(request, 'users/forgot_password.html')

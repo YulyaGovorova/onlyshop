@@ -148,15 +148,29 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/users/login'
 
+# EMAIL_HOST = 'smtp.yandex.ru'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = 'tishyulya-1000@yandex.ru'
+# EMAIL_HOST_PASSWORD = 'silence110595'
+# EMAIL_USE_TLS = False
+# EMAIL_USE_SSL = True
+#
+# SERVER_EMAIL = EMAIL_HOST_USER
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'tishyulya.1@yandex.ru'
-EMAIL_HOST_PASSWORD = 'silence11'
-EMAIL_USE_TLS = False
+EMAIL_HOST_USER = os.getenv('EMAIL')
+EMAIL_HOST_PASSWORD = os.getenv('PASSWORD')
 EMAIL_USE_SSL = True
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-SERVER_EMAIL = EMAIL_HOST_USER
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+AUTH_USER_MODEL = 'users.User'
+
+
+# CACHE_ENABLED = os.getenv('CACHE_ENABLED')
 
 # CACHES = {
 #     "default": {
