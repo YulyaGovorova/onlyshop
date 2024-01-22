@@ -1,4 +1,4 @@
-from django.contrib.auth.views import LogoutView, PasswordResetView
+from django.contrib.auth.views import LogoutView, PasswordResetView, LoginView
 from django.urls import path
 from django.views.generic import TemplateView
 
