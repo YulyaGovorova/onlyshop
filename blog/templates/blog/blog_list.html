@@ -2,7 +2,9 @@
 {% load my_filter %}
 {% block content %}
 <div class="col-12">
+    {% if perms.blog.add_blog %}
     <a href="{% url 'blog:blog_create' %}" class="btn btn-sm btn-outline-secondary m-1">Create new blog></a>
+    {% endif %}
     <div class="row text-center mx-5">
         {% for object in object_list %}
         <div class="col-4">
@@ -22,10 +24,14 @@
                         <div class="btn-group">
                             <a href="{% url 'blog:blogs_item' object.pk %}"
                                class="btn btn-sm btn-outline-secondary m-1">View</a>
+                            {% if perms.blog.change_blog %}
                             <a href="{% url 'blog:blog_update' object.pk %}"
                                class="btn btn-sm btn-outline-secondary m-1">Edit</a>
+                            {% endif %}
+                            {% if perms.blog.delete_blog %}
                             <a href="{% url 'blog:blog_delete' object.pk %}"
                                class="btn btn-sm btn-outline-secondary m-1">Delete</a>
+                            {% endif %}
                             </button>
                         </div>
                     </div>

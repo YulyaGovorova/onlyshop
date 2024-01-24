@@ -74,7 +74,7 @@ class ProductUpdateView(UserPassesTestMixin, LoginRequiredMixin, PermissionRequi
     permission_required = 'catalog.change_product'
 
     def test_func(self):
-        return  self.request.user.is_staff and self.get_object().owner == self.request.user
+        return self.get_object().owner == self.request.user
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(**kwargs)
         version_formset = inlineformset_factory(Product, Version, form=ProductVersionForm, fields='__all__', extra=1)
