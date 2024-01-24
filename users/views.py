@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
@@ -33,14 +34,28 @@ class RegisterView(CreateView):
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:confirm_email')
 
+
+    # def form_valid(self, form):
+    #     new_user = form.save()
+    #     send_mail(
+    #         subject='поздравляем с регистрацией',
+    #         message='вы зарегистрированы',
+    #         form_email=settings.EMAIL_HOST_USER,
+    #         recipient_list=[new_user.email]
+    #     )
+    #     return super().form_valid(form)
+
+
     def post(self, request, **kwargs):
         form = UserRegisterForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(email=email, password=password)
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            # email = form.cleaned_data.get('email')
+            # password = form.cleaned_data.get('password1')
+            # user = authenticate(email=email, password=password)
             send_email_for_verify(request, user)
             return redirect('users:confirm_email')
         context = {
@@ -64,7 +79,7 @@ class EmailVerify(View):
         user = self.get_user(uidb64)
 
         if user is not None and token_generator.check_token(user, token):
-            user.email_verify = True
+            user.is_active = True
             user.save()
             login(request, user)
             return redirect('/')

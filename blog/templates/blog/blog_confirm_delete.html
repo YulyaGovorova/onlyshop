@@ -7,7 +7,9 @@
                 <form method="post">
                     {% csrf_token %}
                     <p> Хотите удалить блог? "{{ object.title }}"</p>
-                    <button type="submit" class="btn btn-success">Подтвердить</button
+                    {% if perms.blog.delete_blog %}
+                    <button type="submit" class="btn btn-success">Подтвердить</button>
+                    {% endif %}
                     <a href="{% url 'blog:blogs' %}" class="btn btn-warning">Отмена</a>
                 </form>
             </div>
