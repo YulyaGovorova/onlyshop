@@ -1,0 +1,48 @@
+{% extends 'catalog/base.html' %}
+{% load my_filter%}
+{% block content %}
+<div>
+
+    <h1 class="container text-center pt-5">
+        Список Товаров
+    </h1>
+    <div class="py-5">
+        <div class="container">
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+                {% for object in objects_list %}
+
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="{{ object.product_image|my_media }}" alt="image" height=200px width=300px>
+                        <div class="card-body">
+                            <p class="card-text">{{ object.name }}</p>
+                            <p class="card-text">{{ object.description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'categories_list' %}">Categories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'product_list' %}">Product list</a>
+                </li>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}
