@@ -8,6 +8,7 @@ from catalog.forms import ProductForm, ProductVersionForm
 from catalog.models import Product, Version
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
+from catalog.utils2 import get_categories
 from config import settings
 from users.models import User
 
@@ -33,10 +34,21 @@ class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView)
     model = Product
     permission_required = 'catalog.view_product'
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data()
-        context_data['title'] = context_data['object']
-        return context_data
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data()
+    #     context_data['title'] = context_data['object']
+    #     return context_data
+
+
+def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    self.object = super().get_object()
+    if self.object.owner == self.request.user or self.request.user.groups.filter(
+            name='Модератор').exists():
+        context["edit"] = True
+    else:
+        context["edit"] = False
+    return context
 
 
 class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -106,3 +118,10 @@ def contact(request):
         'title': 'Контакты'
     }
     return render(request, 'catalog/contact.html', context)
+
+
+def categories_list(request):
+    context = {
+        "objects_list": get_categories()
+    }
+    return render(request, 'catalog/categories_list.html', context=context)

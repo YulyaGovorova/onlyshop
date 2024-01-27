@@ -21,9 +21,16 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
         model = Product
         exclude = ('data_created', 'data_change',)
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['version_user'].widget = forms.HiddenInput()
+    class ModeratorProductForm(forms.ModelForm):
+        class Meta:
+            model = Product
+            fields = ('name', 'description', 'category')
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            for field_name, field in self.fields.items():
+                field.widget.attrs['class'] = 'form-control'
+            self.fields["product_is_published"].widget.attrs['class'] = 'form-check-input'
 
     def clean_product_name(self):
         clean_data = self.cleaned_data['name']
